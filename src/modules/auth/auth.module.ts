@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { LoginController } from './controllers/login.controller';
@@ -28,6 +28,7 @@ import { GoogleStrategy } from './strategies/google.strategy';
     UserService,
     UserRepository,
     ConfigService,
+    Logger,
   ],
   exports: [PassportModule],
 })
