@@ -5,7 +5,7 @@ import { randomBytes } from 'crypto';
 @Injectable()
 export class PasswordService {
   /**
-   * Injecting dependecies
+   * Injecting dependencies
    *
    */
   constructor(private readonly userService: UserService) {}
