@@ -35,7 +35,6 @@ export class User extends ModuleEntity {
   /**
    *
    */
-
   @OneToMany(
     () => ResetPasswordToken,
     (resetPasswordToken) => resetPasswordToken.user,
