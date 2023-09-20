@@ -2,7 +2,7 @@ import { Controller, Post, Body, HttpStatus } from '@nestjs/common';
 import { UserService } from 'src/modules/user';
 import { RegisterUserDto } from '../dto/register-user.dto';
 import { formatResponse } from 'src/utils';
-import { IResponse } from 'src/interfaces';
+import { IResponse } from 'src/common/interfaces';
 
 @Controller('register')
 export class RegisterController {
