@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { User } from '../entites/user.entity';
+import { User } from '../entities/user.entity';
 import { RegisterUserDto } from '../../auth';
 import { CreateUserDto } from '../dto/create.dto';
 import { UserRepository } from './../repositories/user.repository';
 import { ResetPasswordTokenRepository } from '../repositories/reset-password-token-repository';
-import { ResetPasswordToken } from '../entites/reset-password-token.entity';
+import { ResetPasswordToken } from '../entities/reset-password-token.entity';
 
 @Injectable()
 export class ResetPasswordTokenService {

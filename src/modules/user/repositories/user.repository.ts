@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcrypt';
 import { v4 as uuid } from 'uuid';
-import { User } from './../entites/user.entity';
+import { User } from './../entities/user.entity';
 import { Repository, DataSource } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { RegisterUserDto } from '../../auth';

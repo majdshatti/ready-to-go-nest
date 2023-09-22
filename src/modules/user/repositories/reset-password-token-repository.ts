@@ -1,8 +1,8 @@
 import { Repository, DataSource } from 'typeorm';
 import { Injectable } from '@nestjs/common';
-import { ResetPasswordToken } from '../entites/reset-password-token.entity';
+import { ResetPasswordToken } from '../entities/reset-password-token.entity';
 import { v4 as uuid } from 'uuid';
-import { User } from '../entites/user.entity';
+import { User } from '../entities/user.entity';
 import { randomBytes } from 'crypto';
 
 @Injectable()

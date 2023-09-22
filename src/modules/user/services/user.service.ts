@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { User } from '../entites/user.entity';
+import { User } from '../entities/user.entity';
 import { RegisterUserDto } from '../../auth';
 import { CreateUserDto } from '../dto/create.dto';
 import { UserRepository } from './../repositories/user.repository';
@@ -7,10 +7,7 @@ import { ResetPasswordTokenRepository } from '../repositories/reset-password-tok
 
 @Injectable()
 export class UserService {
-  constructor(
-    private readonly userRepository: UserRepository,
-    private readonly resetPasswordTokenRespository: ResetPasswordTokenRepository,
-  ) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
   /**
    *
