@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internal Server Error Alert</title>
+</head>
+<body>
+    <table style="width:100%; max-width:600px; margin:auto; font-family: Arial, sans-serif; border-collapse: collapse;">
+        <tr>
+            <td style="background-color: #f2f2f2; padding: 20px; text-align: center;">
+                {{!-- <img src="https://your-company-logo-url.com/logo.png" alt="Company Logo" style="max-width: 100px; margin-bottom: 20px;"> --}}
+                <h2 style="color: #333;">Internal Server Error Alert</h2>
+            </td>
+        </tr>
+        <tr>
+            <td style="background-color: #ffffff; padding: 20px; text-align: left;">
+                <p>Hello Admin,</p>
+                <p>An internal server error has occurred in the system. Here are the details:</p>
+                <p><strong>Error Message:</strong> {{message}}</p>
+                <p><strong>Error Code:</strong> {{code}}</p>
+                <p><strong>Date and Time:</strong> {{dateTime}}</p>
+                <p>Please take immediate action to investigate and resolve this issue to ensure the system's stability and performance.</p>
+                <p>If you need further information or assistance, please feel free to reach out to the development team.</p>
+                <p>Thank you for your prompt attention to this matter.</p>
+                <p>Best regards,<br>Your Company Name</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="background-color: #f2f2f2; padding: 20px; text-align: center;">
+                <p style="font-size: 12px; color: #888;">This is an automated email. Please do not reply.</p>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
