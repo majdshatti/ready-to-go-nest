@@ -12,6 +12,7 @@ import { ConfigService } from '@nestjs/config';
 import { HttpAdapterHost } from '@nestjs/core';
 import { Queue } from 'bull';
 import { IMailError } from 'src/mail/interfaces/error.interface';
+import { LogService } from 'src/modules/log';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -20,6 +21,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     @InjectQueue('error') private readonly errorQueue: Queue,
     private readonly configService: ConfigService,
     private readonly logger: Logger,
+    private readonly logService: LogService,
   ) {}
 
   async catch(exception: unknown, host: ArgumentsHost): Promise<void> {
@@ -40,15 +42,16 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     if (
       exception instanceof InternalServerErrorException &&
-      this.configService.get('app.env') === 'production'
+      this.configService.get('app.env') === 'development'
     ) {
       const error: IMailError = {
         message: exception.message,
         dateTime: responseBody.timestamp,
         code: httpStatus,
+        path: responseBody.path,
       };
 
-      await this.errorQueue.add(error);
+      await this.errorQueue.add('internal_error_occurred', error);
     }
 
     if (
