@@ -1,5 +1,4 @@
 import * as bcrypt from 'bcrypt';
-import { v4 as uuid } from 'uuid';
 import { User } from './../entities/user.entity';
 import { Repository, DataSource } from 'typeorm';
 import { Injectable } from '@nestjs/common';
@@ -25,7 +24,6 @@ export class UserRepository extends Repository<User> {
     // Salt value
     const salt = await bcrypt.genSalt(10);
 
-    user._id = uuid();
     user.username = dto.username;
     user.email = dto.email;
     user.loginStrategy = dto.loginStrategy ?? 'jwt';
