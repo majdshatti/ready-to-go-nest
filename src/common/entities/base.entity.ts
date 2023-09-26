@@ -6,12 +6,13 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  BeforeInsert,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
+import { v4 as uuid } from 'uuid';
 
-@Entity()
 @Unique(['_id'])
-export class ModuleEntity extends BaseEntity {
+export abstract class ModuleEntity extends BaseEntity {
   /**
    * ID
    *
@@ -48,4 +49,12 @@ export class ModuleEntity extends BaseEntity {
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
   updatedAt: Date;
+
+  /**
+   * Add uuid value before insert
+   */
+  @BeforeInsert()
+  setUuidValue() {
+    this._id = uuid();
+  }
 }
