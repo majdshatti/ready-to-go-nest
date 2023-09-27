@@ -26,7 +26,8 @@
     "migration:revert": "npm run typeorm -- migration:revert",
     "db:create": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:create -d ./src/configs/database.config.ts",
     "db:drop": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:drop -d ./src/configs/database.config.ts",
-    "seed:run": "npm run build && ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./src/configs/database.config.ts"
+    "seed:run": "npm run build && ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./src/configs/database.config.ts",
+    "seed:create": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:create"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^1.7.1",
