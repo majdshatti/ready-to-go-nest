@@ -4,7 +4,7 @@ import { LoginService } from '../services/login.service';
 import { JWTLoginDto } from '../dto/jwt-login.dto';
 import { ICredentials } from '../interfaces/credentials.interface';
 import { AuthGuard } from '@nestjs/passport';
-import { IResponse } from 'src/interfaces';
+import { IResponse } from 'src/common/interfaces';
 import { formatResponse } from 'src/utils';
 import { Request } from 'express';
 
