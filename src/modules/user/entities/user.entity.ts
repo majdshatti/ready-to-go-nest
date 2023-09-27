@@ -1,15 +1,8 @@
-import {
-  Entity,
-  Column,
-  Unique,
-  OneToMany,
-  ManyToMany,
-  JoinTable,
-} from 'typeorm';
+import { Entity, Column, Unique, OneToMany } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { ModuleEntity } from 'src/common/entities';
 import { ResetPasswordToken } from './reset-password-token.entity';
-import { Role } from 'src/modules/role';
+import { userTypes } from 'src/common/types';
 
 @Entity()
 @Unique(['username', 'email'])
@@ -34,6 +27,13 @@ export class User extends ModuleEntity {
   password: string;
 
   /**
+   * Could be admin/end-user
+   */
+  @Column()
+  @Exclude({ toPlainOnly: true })
+  type: userTypes;
+
+  /**
    * Login strategy (JWT, Google, ..etc)
    */
   @Column()
@@ -49,12 +49,4 @@ export class User extends ModuleEntity {
   )
   @Exclude({ toPlainOnly: true })
   passwordResetTokens: ResetPasswordToken[];
-
-  @ManyToMany(() => Role, (role) => role.users)
-  @JoinTable({
-    name: 'role_user',
-    joinColumn: { name: 'user_id', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'role_id', referencedColumnName: 'id' },
-  })
-  roles: Role;
 }
