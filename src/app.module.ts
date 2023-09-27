@@ -15,10 +15,6 @@ import { BullModule } from '@nestjs/bull';
 import { AuthModule } from './modules/auth';
 import { UserModule } from './modules/user';
 import { LogModule } from './modules/log';
-import { RoleModule } from './modules/role/role.module';
-import { PermissionModule } from './modules/permission/permission.module';
-import { PolicyModule } from './modules/policy/policy.module';
-import { ResourceModule } from './modules/resource';
 
 @Module({
   imports: [
@@ -37,10 +33,6 @@ import { ResourceModule } from './modules/resource';
     }),
     BullModule.registerQueue({ name: 'error' }),
     LogModule,
-    RoleModule,
-    PermissionModule,
-    PolicyModule,
-    ResourceModule,
   ],
   controllers: [],
   providers: [
