@@ -16,6 +16,8 @@ import { AuthModule } from './modules/auth';
 import { UserModule } from './modules/user';
 import { LogModule } from './modules/log';
 import { PasswordResetModule } from './modules/password-reset';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -29,6 +31,9 @@ import { PasswordResetModule } from './modules/password-reset';
       },
     }),
     BullModule.registerQueue({ name: 'error' }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+    }),
     TypeOrmDatabaseModule,
     AuthModule,
     UserModule,
