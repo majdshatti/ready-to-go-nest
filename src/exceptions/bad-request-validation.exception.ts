@@ -5,7 +5,7 @@ export class ValidationRequestException extends BadRequestException {
   public readonly errors;
 
   constructor(errors: IValidationError[]) {
-    super('Bad Request: Invaild inputs');
+    super('Bad Request: Invalid inputs');
     this.errors = errors;
   }
 }
