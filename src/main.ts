@@ -10,8 +10,9 @@ import { loggerOptions } from './configs/logger.config';
 import {
   SwaggerModule,
   DocumentBuilder,
-  SwaggerDocumentOptions,
+  SwaggerCustomOptions,
 } from '@nestjs/swagger';
+import { exceptionFactory } from './utils';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -20,7 +21,7 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ exceptionFactory }));
 
   app.enableVersioning({
     type: VersioningType.URI,
@@ -32,12 +33,13 @@ async function bootstrap() {
     .setDescription('The template API description')
     .build();
 
-  const options: SwaggerDocumentOptions = {
-    operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
+  const options: SwaggerCustomOptions = {
+    customCssUrl: '/swagger.css',
+    customSiteTitle: 'Ready to go swagger',
   };
 
-  const document = SwaggerModule.createDocument(app, config, options);
-  SwaggerModule.setup('api', app, document);
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document, options);
 
   await app.listen(3001);
 }
