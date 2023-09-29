@@ -9,4 +9,5 @@ export default registerAs('app', () => ({
   name: process.env.APP_NAME,
   url: process.env.APP_URL,
   port: process.env.APP_PORT,
+  adminpass: process.env.ADMIN_PASSWORD,
 }));
