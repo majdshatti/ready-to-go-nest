@@ -1,0 +1,64 @@
+.swagger-ui .topbar {
+    background-color: #293841;
+    color: white;
+}
+
+/* Change the title color and font size */
+.swagger-ui .info .title {
+    color: #e74c3c;
+    font-size: 24px;
+}
+
+/* Add a border to the response area for better separation */
+.swagger-ui .response-col_description {
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Customize the header background color and text color */
+.swagger-ui .opblock-summary-method {
+    background-color: #f39c12;
+    color: white;
+}
+
+/* Change the button background color */
+.swagger-ui .try-out__btn {
+    background-color: #2ecc71;
+}
+
+/* Customize the parameter section background color */
+.swagger-ui .opblock {
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+/* Change the font family for the documentation content */
+.swagger-ui .markdown p {
+    font-family: Arial, sans-serif;
+}
+
+/* Customize the table styles */
+.swagger-ui .opblock-params tbody td {
+    border: 1px solid #ddd;
+    padding: 5px;
+}
+
+/* Change the footer background color */
+.swagger-ui .info .base-url {
+    background-color: #3498db;
+}
+
+/* Customize the model section */
+.swagger-ui .model-title {
+    color: #e74c3c;
+}
+
+/* Change the response section background color */
+.swagger-ui .responses-inner {
+    background-color: #f9f9f9;
+}
+
+  
