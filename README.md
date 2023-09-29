@@ -104,7 +104,7 @@ Modify the global exception filter to fits your needs in /src/exception/all.filt
 2. To create a new seed file, run the following command, replacing `src/path/to/seeds/folder` with the actual path where you want to create the seed file and `MySeedFile` with your desired filename:
 
 ```bash
-npm run seed:create -- name=src/path/to/seeds/folder/MySeedFile.ts
+npm run seed:create -- -name=src/path/to/seeds/folder/MySeedFile.ts
 ```
 
 3. Run the seeder:
