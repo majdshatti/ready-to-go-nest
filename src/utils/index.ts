@@ -1,7 +1,7 @@
-import { generateKey } from "./common/generate-key.util";
-import { formatResponse } from "./common/response.util";
-import { isValidEmail } from "./validators/is-email.util";
+import { generateKey } from './string/generate-key.util';
+import { formatResponse } from './http/response.util';
+import { isValidEmail } from './validators/is-email.util';
+import { isObjKey } from './data-structures/is-object-key.util';
+import { arrayify } from './data-structures/arrayify.util';
 
-export {
-    generateKey, formatResponse, isValidEmail
-}
+export { generateKey, formatResponse, isValidEmail, isObjKey, arrayify };
