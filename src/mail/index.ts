@@ -1,4 +1,11 @@
-import { MailConsumer } from './mail.consumer';
+import { ErrorMailConsumer } from './consumers/error.consumer';
+import { ResetPasswordMailConsumer } from './consumers/reset-password.consumer';
 import { MailModule } from './mail.module';
+import { MailService } from './mail.service';
 
-export { MailConsumer, MailModule };
+export {
+  ErrorMailConsumer,
+  MailModule,
+  ResetPasswordMailConsumer,
+  MailService,
+};
