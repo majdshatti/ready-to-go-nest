@@ -3,15 +3,15 @@ import { Strategy, VerifyCallback } from 'passport-google-oauth20';
 
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { IGoogleStrategy } from '../interfaces/strategy.interface';
-import { User, UserRepository, UserService } from 'src/modules/user';
+import { IStrategy } from '../interfaces/strategy.interface';
+import { User, UserService } from 'src/modules/user';
 import { IGoogleUser } from '../interfaces/google-user.interface';
 import { RegisterUserDto } from '../dto/register-user.dto';
 
 @Injectable()
 export class GoogleStrategy
   extends PassportStrategy(Strategy, 'google')
-  implements IGoogleStrategy
+  implements IStrategy
 {
   constructor(
     protected readonly configService: ConfigService,
