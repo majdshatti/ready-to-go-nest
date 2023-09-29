@@ -12,32 +12,32 @@ import { ConfigService } from '@nestjs/config';
 import { HttpAdapterHost } from '@nestjs/core';
 import { Queue } from 'bull';
 import { IMailError } from 'src/mail/interfaces/error.interface';
-import { LogService } from 'src/modules/log';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
   constructor(
-    private readonly httpAdapterHost: HttpAdapterHost,
     @InjectQueue('error') private readonly errorQueue: Queue,
+    private readonly httpAdapterHost: HttpAdapterHost,
     private readonly configService: ConfigService,
     private readonly logger: Logger,
-    private readonly logService: LogService,
   ) {}
 
+  /**
+   *
+   * @param exception
+   * @param host
+   */
   async catch(exception: unknown, host: ArgumentsHost): Promise<void> {
     const { httpAdapter } = this.httpAdapterHost;
 
     const ctx = host.switchToHttp();
 
-    const httpStatus =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR;
+    const httpStatus = this.getStatusCode(exception);
+    const message = this.getExceptionMessage(exception);
 
     const responseBody = {
       statusCode: httpStatus,
-      timestamp: new Date().toISOString(),
-      path: httpAdapter.getRequestUrl(ctx.getRequest()),
+      message,
     };
 
     if (
@@ -46,9 +46,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
     ) {
       const error: IMailError = {
         message: exception.message,
-        dateTime: responseBody.timestamp,
+        dateTime: new Date().toISOString(),
         code: httpStatus,
-        path: responseBody.path,
+        path: httpAdapter.getRequestUrl(ctx.getRequest()),
       };
 
       await this.errorQueue.add('internal_error_occurred', error);
@@ -64,10 +64,46 @@ export class AllExceptionsFilter implements ExceptionFilter {
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
   }
 
+  /**
+   * returns status code
+   *
+   * @param exception
+   * @returns number statusCode
+   */
+  getStatusCode(exception: unknown) {
+    return exception instanceof HttpException
+      ? exception.getStatus()
+      : HttpStatus.INTERNAL_SERVER_ERROR;
+  }
+
+  /**
+   * returns exception message
+   *
+   * @param exception
+   * @returns message string
+   */
+  getExceptionMessage(exception: unknown) {
+    return exception instanceof HttpException
+      ? exception.message
+      : 'Internal Server Error';
+  }
+
+  /**
+   * checks if message property exists in exception
+   *
+   * @param obj any exception
+   * @return boolean
+   */
   hasMessageProperty(obj: any): obj is { message: string } {
     return typeof obj === 'object' && 'message' in obj;
   }
 
+  /**
+   * checks if stack property exists in exception
+   *
+   * @param obj any exception
+   * @return boolean
+   */
   hasStackProperty(obj: any): obj is { stack: string } {
     return typeof obj === 'object' && 'stack' in obj;
   }
