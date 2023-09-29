@@ -1,7 +1,7 @@
 import { Entity, Column, Unique, OneToMany } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { ModuleEntity } from 'src/common/entities';
-import { ResetPasswordToken } from './reset-password-token.entity';
+import { PasswordReset } from 'src/modules/password-reset/entities/password-reset.entity';
 import { userTypes } from 'src/common/types';
 
 @Entity()
@@ -43,10 +43,7 @@ export class User extends ModuleEntity {
   /**
    *
    */
-  @OneToMany(
-    () => ResetPasswordToken,
-    (resetPasswordToken) => resetPasswordToken.user,
-  )
+  @OneToMany(() => PasswordReset, (passwordReset) => passwordReset.user)
   @Exclude({ toPlainOnly: true })
-  passwordResetTokens: ResetPasswordToken[];
+  passwordResets: PasswordReset[];
 }
