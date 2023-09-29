@@ -7,12 +7,14 @@ import { AuthGuard } from '@nestjs/passport';
 import { IResponse } from 'src/common/interfaces';
 import { formatResponse } from 'src/utils';
 import { Request } from 'express';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 /**
  * @class LoginController
  *
  * Responsible for handling only login logic
  */
+@ApiTags('Login')
 @Controller('login')
 export class LoginController {
   /**
@@ -23,11 +25,14 @@ export class LoginController {
   constructor(private readonly loginService: LoginService) {}
 
   /**
-   * Logins a user using the JWT startegy
+   * Returns jwt token for authenticated user
    *
    * @param loginDto
    * @returns Promise<IResponse>
    */
+  @ApiOperation({ summary: 'Returns jwt token for authenticated user' })
+  @ApiResponse({ status: 200, description: 'Jwt token', type: JWTLoginDto })
+  @ApiResponse({ status: 404, description: 'Invalid credentials.' })
   @Post('jwt')
   async loginWithJwt(@Body() loginDto: JWTLoginDto): Promise<IResponse> {
     const { identifier, password } = loginDto;
@@ -42,10 +47,14 @@ export class LoginController {
 
   /**
    * Redirects the user to the google login form if not authenticated
-   * using the google stratgey
+   * using the google strategy
    *
    * @return void
    */
+  @ApiOperation({
+    summary: 'Redirects the user to the google login form if not authenticated',
+  })
+  @ApiResponse({ status: 200, description: 'Opens hosted google login form' })
   @Get('google')
   @UseGuards(AuthGuard('google'))
   async loginWithGoogle() {}
@@ -53,8 +62,9 @@ export class LoginController {
   /**
    * Handles the callback of google redirect
    *
-   * @return Promsie<IResponse>
+   * @return Promise<IResponse>
    */
+  @ApiOperation({ summary: 'Logins verified user using google' })
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   async googleCallBackRedirect(@Req() request: Request): Promise<IResponse> {

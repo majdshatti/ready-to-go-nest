@@ -3,7 +3,9 @@ import { UserService } from 'src/modules/user';
 import { RegisterUserDto } from '../dto/register-user.dto';
 import { formatResponse } from 'src/utils';
 import { IResponse } from 'src/common/interfaces';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Register')
 @Controller('register')
 export class RegisterController {
   constructor(private readonly userService: UserService) {}
