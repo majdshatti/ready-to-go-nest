@@ -7,7 +7,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { IPayload } from '../interfaces/payload.interface';
 import { User, UserService } from 'src/modules/user';
-import { IJwtStrategy } from 'src/modules/auth/interfaces/strategy.interface';
+import { IStrategy } from 'src/modules/auth/interfaces/strategy.interface';
 import { ICredentials } from '../interfaces/credentials.interface';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -21,7 +21,7 @@ import * as bcrypt from 'bcrypt';
 @Injectable()
 export class JwtStrategy
   extends PassportStrategy(Strategy, 'jwt')
-  implements IJwtStrategy
+  implements IStrategy
 {
   /**
    *
