@@ -45,7 +45,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     if (
       exception instanceof InternalServerErrorException &&
-      this.configService.get('app.env') === 'development'
+      this.configService.get('app.env') === 'production'
     ) {
       const error: IMailError = {
         message: exception.message,
