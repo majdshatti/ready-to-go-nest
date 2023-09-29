@@ -1,8 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import {
-  IGoogleStrategy,
-  IJwtStrategy,
-} from '../interfaces/strategy.interface';
+import { Inject, Injectable } from '@nestjs/common';
+import { IStrategy } from '../interfaces/strategy.interface';
 import { ICredentials } from '../interfaces/credentials.interface';
 import { User } from 'src/modules/user';
 import { Request } from 'express';
@@ -10,13 +7,13 @@ import { Request } from 'express';
 @Injectable()
 export class LoginService {
   /**
-   * Injecting dependecies
+   * Injecting dependencies
    *
    * @param strategy IAuthStrategy
    */
   constructor(
-    private readonly jwtStrategy: IJwtStrategy,
-    private readonly googleStrategy: IGoogleStrategy,
+    @Inject('GoogleStrategy') private readonly googleStrategy: IStrategy,
+    @Inject('JwtStrategy') private readonly jwtStrategy: IStrategy,
   ) {}
 
   /**
@@ -25,7 +22,7 @@ export class LoginService {
    * @param credentials ICredentials
    * @return Promise<User>
    */
-  public async loginJwt(credentials: ICredentials): Promise<User> {
+  async loginJwt(credentials: ICredentials): Promise<User> {
     return await this.jwtStrategy.login(credentials);
   }
 
@@ -35,7 +32,7 @@ export class LoginService {
    * @param request Request
    * @return Promise<User>
    */
-  public async loginGoogle(request: Request): Promise<User> {
+  async loginGoogle(request: Request): Promise<User> {
     return await this.googleStrategy.login(request);
   }
 }
