@@ -1,6 +1,7 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import { IMailError } from './interfaces/error.interface';
+import { IMailResetPassword } from './interfaces/reset-password.interface';
 
 @Injectable()
 export class MailService {
@@ -15,6 +16,17 @@ export class MailService {
         message: error.message,
         code: error.code,
         dateTime: error.dateTime,
+      },
+    });
+  }
+
+  async sendResetPasswordRequest(data: IMailResetPassword) {
+    await this.mailerService.sendMail({
+      to: data.to,
+      subject: 'Reset Password Inquiry',
+      template: './reset-password',
+      context: {
+        token: data.token,
       },
     });
   }
