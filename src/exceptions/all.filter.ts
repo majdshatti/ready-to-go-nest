@@ -12,6 +12,7 @@ import { ConfigService } from '@nestjs/config';
 import { HttpAdapterHost } from '@nestjs/core';
 import { Queue } from 'bull';
 import { IMailError } from 'src/mail/interfaces/error.interface';
+import { ValidationRequestException } from './bad-request-validation.exception';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -34,10 +35,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     const httpStatus = this.getStatusCode(exception);
     const message = this.getExceptionMessage(exception);
+    const exceptionError: Object = this.getExceptionError(exception);
 
     const responseBody = {
       statusCode: httpStatus,
       message,
+      errors: exceptionError,
     };
 
     if (
@@ -70,7 +73,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
    * @param exception
    * @returns number statusCode
    */
-  getStatusCode(exception: unknown) {
+  private getStatusCode(exception: unknown) {
     return exception instanceof HttpException
       ? exception.getStatus()
       : HttpStatus.INTERNAL_SERVER_ERROR;
@@ -82,11 +85,17 @@ export class AllExceptionsFilter implements ExceptionFilter {
    * @param exception
    * @returns message string
    */
-  getExceptionMessage(exception: unknown) {
+  private getExceptionMessage(exception: unknown) {
     return exception instanceof HttpException
       ? exception.message
       : 'Internal Server Error';
   }
+
+  private getExceptionError = (exception: unknown): Object => {
+    return exception instanceof ValidationRequestException
+      ? exception.errors
+      : {};
+  };
 
   /**
    * checks if message property exists in exception
