@@ -18,10 +18,10 @@ const config: DataSourceOptions & SeederOptions = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   name: process.env.DB_NAME,
-  entities: ['dist/**/*.entity.js'],
+  entities: ['dist/modules/**/entities/*.entity.js'],
   migrations: ['dist/database/migrations/*.js'],
   namingStrategy: new SnakeNamingStrategy(),
-  seeds: ['dist/database/seeds/**/*.js']
+  seeds: ['dist/database/seeds/**/*.js'],
 };
 
 export default registerAs('database', () => config);
