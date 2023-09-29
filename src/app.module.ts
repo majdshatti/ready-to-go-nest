@@ -10,21 +10,18 @@ import {
 import { Logger, Module } from '@nestjs/common';
 import { TypeOrmDatabaseModule } from './database';
 import { AllExceptionsFilter } from './exceptions';
-import { MailConsumer, MailModule } from './mail';
+import { MailModule } from './mail';
 import { BullModule } from '@nestjs/bull';
 import { AuthModule } from './modules/auth';
 import { UserModule } from './modules/user';
 import { LogModule } from './modules/log';
+import { PasswordResetModule } from './modules/password-reset';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       load: [databaseConfig, appConfig, keysConfig, googleConfig, mailConfig],
     }),
-    TypeOrmDatabaseModule,
-    AuthModule,
-    UserModule,
-    MailModule,
     BullModule.forRoot({
       redis: {
         host: 'localhost',
@@ -32,6 +29,11 @@ import { LogModule } from './modules/log';
       },
     }),
     BullModule.registerQueue({ name: 'error' }),
+    TypeOrmDatabaseModule,
+    AuthModule,
+    UserModule,
+    PasswordResetModule,
+    MailModule,
     LogModule,
   ],
   controllers: [],
@@ -41,7 +43,6 @@ import { LogModule } from './modules/log';
       useClass: AllExceptionsFilter,
     },
     Logger,
-    MailConsumer,
   ],
 })
 export class AppModule {}
