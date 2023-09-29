@@ -3,9 +3,9 @@ import { HttpStatus } from '@nestjs/common/enums';
 import { IResponse } from 'src/common/interfaces';
 import { formatResponse } from 'src/utils';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
-import { PasswordResetService, UserService } from 'src/modules/user';
 import { PasswordResetDto } from './dto/password-reset.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { PasswordResetService } from './password-reset.service';
 
 /**
  * @class PasswordResetController
