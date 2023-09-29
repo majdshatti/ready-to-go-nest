@@ -6,6 +6,6 @@ import { LogRepository } from './log.repository';
 @Module({
   controllers: [LogController],
   providers: [LogService, LogRepository],
-  exports: [LogService, LogRepository],
+  exports: [LogService],
 })
 export class LogModule {}

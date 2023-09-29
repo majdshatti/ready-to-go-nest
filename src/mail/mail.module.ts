@@ -4,9 +4,13 @@ import { Module } from '@nestjs/common';
 import { MailService } from './mail.service';
 import { join } from 'path';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ErrorMailConsumer } from './consumers/error.consumer';
+import { ResetPasswordMailConsumer } from './consumers/reset-password.consumer';
+import { LogModule } from 'src/modules/log';
 
 @Module({
   imports: [
+    LogModule,
     MailerModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (config: ConfigService) => ({
@@ -32,7 +36,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       inject: [ConfigService],
     }),
   ],
-  providers: [MailService],
-  exports: [MailService],
+  providers: [MailService, ErrorMailConsumer, ResetPasswordMailConsumer],
+  exports: [MailService, ErrorMailConsumer, ResetPasswordMailConsumer],
 })
 export class MailModule {}

@@ -4,13 +4,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { LoginController } from './controllers/login.controller';
 import { LoginService } from './services/login.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { UserRepository, UserService } from '../user';
+import { UserModule } from '../user';
 import { RegisterController } from './controllers/register.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GoogleStrategy } from './strategies/google.strategy';
 
 @Module({
   imports: [
+    ConfigModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -20,15 +21,14 @@ import { GoogleStrategy } from './strategies/google.strategy';
       }),
       inject: [ConfigService],
     }),
+    UserModule,
   ],
   controllers: [LoginController, RegisterController],
   providers: [
-    { provide: LoginService, useClass: JwtStrategy },
-    { provide: LoginService, useClass: GoogleStrategy },
-    UserService,
-    UserRepository,
-    ConfigService,
+    LoginService,
     Logger,
+    { provide: 'JwtStrategy', useClass: JwtStrategy },
+    { provide: 'GoogleStrategy', useClass: GoogleStrategy },
   ],
   exports: [PassportModule],
 })
