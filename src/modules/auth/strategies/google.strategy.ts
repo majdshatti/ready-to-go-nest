@@ -6,7 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { IStrategy } from '../interfaces/strategy.interface';
 import { User, UserService } from 'src/modules/user';
 import { IGoogleUser } from '../interfaces/google-user.interface';
-import { RegisterUserDto } from '../dto/register-user.dto';
+import { CreateUserDto } from 'src/modules/user/dto/create.dto';
 
 @Injectable()
 export class GoogleStrategy
@@ -54,7 +54,7 @@ export class GoogleStrategy
     );
 
     if (!user) {
-      const userDto: RegisterUserDto = {
+      const userDto: CreateUserDto = {
         email: googleUser.email,
         loginStrategy: 'google',
         username: googleUser.email.split('@')[0],
