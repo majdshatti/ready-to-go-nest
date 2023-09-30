@@ -26,6 +26,22 @@ Streamline your database setup and management with the included seeding and migr
 - Easily populate your database with initial data using seeding.
 - Keep your database schema up to date with migrations, making it simple to evolve your application over time.
 
+### Query filtering
+
+Ready to Go Nest simplifies data retrieval with the powerful "Query Filter" feature, allowing you to filter, search, sort, and paginate data effortlessly. Here's how you can harness this feature:
+
+- **Filter by Columns**: Easily filter data based on specific columns or fields. You can narrow down results to meet your application's requirements.
+
+- **Search**: Implement a search functionality that allows users to find records by providing search keywords. This feature enhances user experience and data accessibility.
+
+- **Sort**: Sort data in ascending or descending order based on one or more columns. Sorting ensures that data is presented in a meaningful and organized way.
+
+- **Paginate**: Implement pagination to display large datasets in manageable chunks. Users can navigate through pages to view additional data without overwhelming the interface.
+
+### Unique Constraint
+
+The "Unique Constraint Custom Validator" is a versatile and widely used feature that ensures the uniqueness of data within your application. It's a valuable tool in preventing duplicate entries in databases and maintaining data integrity.
+
 ### Email Functionality with Bull
 
 Integrate Bull to handle email sending efficiently. This feature allows you to:
@@ -97,6 +113,26 @@ Modify the global exception filter to fits your needs in /src/exception/all.filt
 
 ### Seeding, Factories and Migrations
 
+#### Migrations
+
+To apply pending migrations and update your database schema, use the following command:
+
+```bash
+npm run migration:run
+```
+
+To create a new migration file based on changes in your application's models or schema, use the following command:
+
+```bash
+npm run migration:generate
+```
+
+To revert the last applied migration and roll back changes to your database schema, use the following command:
+
+```bash
+npm run migration:revert
+```
+
 #### Seeding
 
 1. Open your terminal and navigate to your project's root directory.
@@ -111,6 +147,188 @@ npm run seed:create -- -name=src/path/to/seeds/folder/MySeedFile.ts
 
 ```bash
 npm run seed:run
+```
+
+### Query Filter
+
+1. Decorate the query object by using the FilterDecorator
+
+```typescript
+@Get('/')
+async getUsers(@FilterDecorator() userQueryFilterDto: UserQueryFilterDto) {
+  return formatResponse(
+    HttpStatus.OK,
+    'users retrieved successfully',
+    await this.userService.getUsers(userQueryFilterDto),
+  );
+}
+```
+
+2. Inject filter service and call the get generic method providing the desired entity to be filtered on.
+
+```typescript
+constructor(private readonly filterService: FilterService) {}
+
+async getUsers(userQueryFilterDto: UserQueryFilterDto) {
+  return await this.filterService.get<User>(
+    userQueryFilterDto,
+    this.userRepository,
+    {
+    // options go here
+    },
+  );
+}
+```
+
+3. Implement a userQueryFilterDto that extends the filterDto
+
+```typescript
+import { QueryFilterDto } from 'src/modules/filter';
+
+export class UserQueryFilterDto extends QueryFilterDto {
+  @IsOptional()
+  @IsNotEmpty()
+  loginStrategy: string;
+}
+```
+
+#### Adding conditions
+
+The "Conditions" object functions similarly to adding a "WHERE" statement in your queries. For example let's assume that you want to retrieve all users that has the loginStrategy of 'google':
+
+1. Simply add the conditions object to the filter service
+
+```typescript
+conditions: {
+  loginStrategy: userQueryFilterDto.loginStrategy,
+  // add more conditions
+},
+```
+
+2. Use the following url
+
+```bash
+http://localhost:3001/v1/user?loginStrategy=jwt
+```
+
+#### Search
+
+Searching becomes incredibly simple, all you need to do is:
+
+1. add the searchableColumns:
+
+```typescript
+{
+  searchableColumns: ['username', 'email'],
+}
+```
+
+2. Use the following url:
+
+```bash
+http://localhost:3001/v1/user?search=majd
+```
+
+#### Sorting
+
+1. add the sortableColumns:
+
+```typescript
+{
+  sortableColumns: ['username', 'email', 'createdAt'],
+}
+```
+
+2. Use the following url:
+
+```bash
+http://localhost:3001/v1/user?sortBy=createdAt:DESC
+```
+
+You can also sort either by DESC or ASC
+
+#### Fields Filtering
+
+To enable filtering on values, you can configure the `filterableColumns` object in your project. This configuration defines which columns are filterable and which filtering operators can be used on each column. Here's an example configuration:
+
+```typescript
+{
+  filterableColumns: {
+    name: [FilterOperator.LIKE, FilterOperator.EQ],
+    createdAt: [FilterOperator.GT]
+  },
+}
+```
+
+Once you've configured the filterableColumns, you can incorporate filtering into your queries. Here's an example of how to apply filtering when retrieving data:
+
+```bash
+http://localhost:3001/v1/user?filter.created_at=$gt:2020-01-01&filter.username=Majd
+```
+
+⚠️ **Warning**: Use snake naming convention.
+
+In some cases, you may notice that the 'Conditions' and 'Filter' options appear to have similar functions. However, they serve distinct purposes:
+
+1. "Conditions Option:" Use the 'Conditions' option when you need to manually add specific conditions to your queries, typically when you want to apply filters that are not based on query parameters. This option gives you fine-grained control over how you filter data.
+
+2. "Filterable Columns Option:" On the other hand, the 'Filterable Columns' option empowers users to decide which columns to filter on and how to filter them. For instance, if a user has a list of posts, it's more convenient to provide an API specialized in returning a user's posts rather than having them add query parameters like '?user.id=1' manually.
+
+#### Selecting Columns
+
+To utilize the "Select" option, you can provide an array of field names that you wish to include in the query result. For instance:
+
+```typescript
+{
+  selectFields: ['username', 'id'],
+}
+```
+
+### Pagination
+
+To enable pagination, you can specify the `paginate` option in your queries. This option includes two properties:
+
+- `limit`: Defines the maximum number of records to retrieve per page. In the example configuration below, we've set the limit to 10, which means each page will display a maximum of 10 records.
+- `skip`: Indicates the number of records to skip before starting to retrieve data. This is particularly useful when you want to skip a certain number of records at the beginning of a query result. For example, if you set `skip` to 10, the query will skip the first 10 records and start retrieving data from the 11th record onward.
+
+```typescript
+{
+  paginate: {
+    limit: 10,
+    skip: 10,
+  },
+}
+```
+
+```bash
+http://localhost:3001/user?page=2&limit=1
+```
+
+#### Finally 🎉 Dealing With Relations
+
+To retrieve data along with related entities, you can specify the `withRelations` option in your queries. This option accepts an array of related entities that you want to include in the query result. For example:
+
+```typescript
+{
+  // usually password resets should not be returned in response if you are testing
+  // the code below on the template just remove the @Exclude in password-reset.entity.ts
+  withRelations: ['passwordResets'];
+}
+```
+
+You can also incorporate relationships into any of the options mentioned above. Let's explore a comprehensive example to illustrate this.
+
+```typescript
+{
+  sortableColumns: ['passwordResets.reset_password_expire'],
+  withRelations: ['passwordResets'],
+},
+```
+
+And then:
+
+```bash
+http://localhost:3001/user?sortBy=passwordResets.reset_password_expire:ASC
 ```
 
 ### Email Functionality with Bull
@@ -139,24 +357,10 @@ export class ErrorMailConsumer {
 }
 ```
 
-#### Migrations
-
-To apply pending migrations and update your database schema, use the following command:
+⚠️ **Warning**: make sure you start redis server in order for the queue to work
 
 ```bash
-npm run migration:run
-```
-
-To create a new migration file based on changes in your application's models or schema, use the following command:
-
-```bash
-npm run migration:generate
-```
-
-To revert the last applied migration and roll back changes to your database schema, use the following command:
-
-```bash
-npm run migration:revert
+sudo systemctl start redis-server
 ```
 
 ### Configuration Setup
