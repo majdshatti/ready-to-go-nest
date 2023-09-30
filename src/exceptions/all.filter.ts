@@ -42,6 +42,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
       errors: exceptionError,
     };
 
+    // log errors using the file transport
+    if (this.hasMessageProperty(exception))
+      this.logger.error(
+        exception.message,
+        this.hasStackProperty(exception) ? exception.stack : null,
+      );
+
     // send mail when an internal server error occurs
     if (
       exception instanceof InternalServerErrorException &&
@@ -56,14 +63,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
       // send mail via bull queue
       await this.errorQueue.add('internal_error_occurred', error);
+    } else {
+      // Log to cli for more user exp
+      console.log(exception);
     }
-
-    // log errors using the file transport
-    if (this.hasMessageProperty(exception))
-      this.logger.error(
-        exception.message,
-        this.hasStackProperty(exception) ? exception.stack : null,
-      );
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
   }
