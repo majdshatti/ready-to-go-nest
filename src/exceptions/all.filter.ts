@@ -24,9 +24,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
   ) {}
 
   /**
-   *
-   * @param exception
-   * @param host
+   * @param exception unknown
+   * @param host ArgumentsHost
    */
   async catch(exception: unknown, host: ArgumentsHost): Promise<void> {
     const { httpAdapter } = this.httpAdapterHost;
@@ -43,6 +42,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       errors: exceptionError,
     };
 
+    // send mail when an internal server error occurs
     if (
       exception instanceof InternalServerErrorException &&
       this.configService.get('app.env') === 'production'
@@ -54,15 +54,16 @@ export class AllExceptionsFilter implements ExceptionFilter {
         path: httpAdapter.getRequestUrl(ctx.getRequest()),
       };
 
+      // send mail via bull queue
       await this.errorQueue.add('internal_error_occurred', error);
     }
 
-    if (
-      this.hasMessageProperty(exception) &&
-      this.hasStackProperty(exception)
-    ) {
-      this.logger.error(exception.message, exception.stack);
-    }
+    // log errors using the file transport
+    if (this.hasMessageProperty(exception))
+      this.logger.error(
+        exception.message,
+        this.hasStackProperty(exception) ? exception.stack : null,
+      );
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
   }
@@ -91,6 +92,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
       : 'Internal Server Error';
   }
 
+  /**
+   * returns validation errors object
+   *
+   * @param exception
+   * @returns Object
+   */
   private getExceptionError = (exception: unknown): Object => {
     return exception instanceof ValidationRequestException
       ? exception.errors
