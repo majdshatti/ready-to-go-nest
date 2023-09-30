@@ -4,7 +4,7 @@ import { RegisterUserDto } from '../auth';
 import { CreateUserDto } from './dto/create.dto';
 import { UserRepository } from './user.repository';
 import { FilterService } from '../filter/filter.service';
-import { QueryFilterDto } from '../filter';
+import { UserQueryFilterDto } from './dto/get-users-query.dto';
 
 @Injectable()
 export class UserService {
@@ -15,14 +15,13 @@ export class UserService {
   /**
    *
    */
-  async getUsers(queryFilterDto: QueryFilterDto) {
+  async getUsers(userQueryFilterDto: UserQueryFilterDto) {
     return await this.filterService.get<User>(
-      queryFilterDto,
+      userQueryFilterDto,
       this.userRepository,
       {
-        paginate: {
-          limit: 2,
-        },
+        sortableColumns: ['passwordResets.reset_password_expire'],
+        withRelations: ['passwordResets'],
       },
     );
   }
