@@ -13,6 +13,7 @@ import {
   SwaggerCustomOptions,
 } from '@nestjs/swagger';
 import { exceptionFactory } from './utils';
+import { useContainer } from 'class-validator';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -40,6 +41,7 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document, options);
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   await app.listen(3001);
 }
