@@ -38,7 +38,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const exceptionError: Object = this.getExceptionError(exception);
 
     const responseBody = {
-      statusCode: httpStatus,
+      status: httpStatus,
       message,
       errors: exceptionError,
     };
