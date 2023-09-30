@@ -74,7 +74,9 @@ export class PasswordResetService {
       throw new BadRequestException('Reset password request is expired');
 
     const user: User = await this.userService.getOne({
-      id: passwordReset.userId,
+      where: {
+        id: passwordReset.userId,
+      },
     });
 
     const salt = await bcrypt.genSalt(10);
