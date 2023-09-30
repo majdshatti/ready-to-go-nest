@@ -26,7 +26,8 @@ export class UserRepository extends Repository<User> {
 
     user.username = dto.username;
     user.email = dto.email;
-    user.loginStrategy = dto.loginStrategy ?? 'jwt';
+    user.loginStrategy = 'jwt';
+    user.type = 'end-user';
 
     // Hash password with the salt value
     user.password = await bcrypt.hash(dto.password, salt);
