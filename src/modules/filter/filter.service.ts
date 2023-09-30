@@ -26,18 +26,24 @@ export class FilterService {
       conditions,
     } = options;
 
-    const albumAlias = repository.metadata.tableName;
+    const tableAlias = repository.metadata.tableName;
 
     /** Initiating query builder */
-    let queryBuilder = repository.createQueryBuilder(albumAlias);
+    let queryBuilder = repository.createQueryBuilder(tableAlias);
 
     /** Search */
     if (queries.search && searchableColumns?.length > 0) {
       for (const col of searchableColumns) {
-        const tableAlias = checkTableAlias(col, albumAlias, withRelations);
+        const isRelationAliasProvided = checkTableAlias(
+          col,
+          tableAlias,
+          withRelations,
+        );
 
         queryBuilder.orWhere(
-          `${tableAlias === 'album' ? 'album.' : ''}${col} LIKE :${col}`,
+          `${
+            isRelationAliasProvided !== '' ? tableAlias + '.' : ''
+          }${col} LIKE :${col}`,
           {
             [col]: `%${queries.search}%`,
           },
@@ -48,7 +54,7 @@ export class FilterService {
     /** Conditions */
     if (conditions) {
       for (const cond in conditions) {
-        queryBuilder.andWhere(`${albumAlias}.${cond} = :${cond}`, {
+        queryBuilder.andWhere(`${tableAlias}.${cond} = :${cond}`, {
           [cond]: `${conditions[cond]}`,
         });
       }
@@ -75,10 +81,14 @@ export class FilterService {
           value = value.split(',');
         }
 
-        const tableAlias = checkTableAlias(col, albumAlias, withRelations);
+        const isRelationAliasProvided = checkTableAlias(
+          col,
+          tableAlias,
+          withRelations,
+        );
 
         const sqlStatement: string =
-          (tableAlias === 'album' ? albumAlias + '.' : '') +
+          (isRelationAliasProvided !== '' ? tableAlias + '.' : '') +
           getWhereStatement(sqlOperator, col);
 
         queryBuilder.andWhere(sqlStatement, {
@@ -90,7 +100,7 @@ export class FilterService {
     /** Relations */
     if (withRelations?.length > 0) {
       for (const relation of withRelations) {
-        queryBuilder.leftJoinAndSelect(`${albumAlias}.${relation}`, relation);
+        queryBuilder.leftJoinAndSelect(`${tableAlias}.${relation}`, relation);
       }
     }
 
@@ -108,11 +118,15 @@ export class FilterService {
       // sortMethod only accepts DESC/ASC values
       const sortMethod: 'DESC' | 'ASC' = sortBy[1] === 'ASC' ? 'ASC' : 'DESC';
 
-      const tableAlias = checkTableAlias(sortField, albumAlias, withRelations);
+      const isRelationAliasProvided = checkTableAlias(
+        sortField,
+        tableAlias,
+        withRelations,
+      );
 
       if (sortableColumns.includes(sortField)) {
         queryBuilder.orderBy(
-          (tableAlias === 'album' ? 'album.' : '') + sortField,
+          (isRelationAliasProvided !== '' ? tableAlias + '.' : '') + sortField,
           sortMethod,
         );
       }
@@ -125,7 +139,7 @@ export class FilterService {
       // sortMethod only accepts DESC/ASC values
       sortMethod = sortMethod === 'ASC' ? 'ASC' : 'DESC';
 
-      queryBuilder.orderBy(albumAlias + '.' + sortField, sortMethod);
+      queryBuilder.orderBy(tableAlias + '.' + sortField, sortMethod);
     }
 
     /** Pagination */
@@ -134,7 +148,7 @@ export class FilterService {
     let limit: number;
 
     // Get limit from URl if not get it from default setting
-    if (queries.limit || paginate.limit) {
+    if (queries.limit || paginate?.limit) {
       limit = queries.limit ?? paginate.limit;
       queryBuilder.take(limit);
       itemsPerPage = limit;
