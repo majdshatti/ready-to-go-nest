@@ -124,7 +124,7 @@ npm run migration:run
 To create a new migration file based on changes in your application's models or schema, use the following command:
 
 ```bash
-npm run migration:generate
+npm run migration:generate -- src/database/migrations/MigrationName
 ```
 
 To revert the last applied migration and roll back changes to your database schema, use the following command:
